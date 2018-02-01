@@ -1,20 +1,27 @@
 {
-  "name": "list",
-  "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
-  "engines": {
-    "node": "6.9.1"
+  "name": "contact-list",
+  "version": "0.1.0",
+  "description": "Add contacts to Salesforce using Heroku Connect",
+  "repository": "https://github.com/lukemcfarlane/contact-list",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
   },
   "dependencies": {
-    "mongodb": "^2.2.24",
-    "mongoose": "^4.8.4"
+    "body-parser": "^1.12.0",
+    "express": "~4.9.x",
+    "jquery": "2.1.1",
+    "lodash": "^2.4.1",
+    "pg": "^4.3.0"
   },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+  "engines": {
+    "node": "0.10.x"
   },
-  "author": "laksh",
-  "license": "ISC"
+  "keywords": [
+    "node",
+    "connect",
+    "heroku",
+    "express"
+  ],
+  "license": "MIT"
 }
