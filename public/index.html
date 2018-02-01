@@ -1,47 +1,46 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE>
+<html ng-app = myApp>
 <head>
-	<title>Contact List App</title>	
-	<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+	<title>Contact List</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+	<link rel="stylesheet" href="styles.css" type="text/css" />
 </head>
-<body ng-app="myApp">
-<div class="container" ng-controller="AppCtrl">
-	<h1>Contact List App</h1>
-	<input ng-model="test">	
-	<h1>{{test}}</h1>
- <table class="table">
- 	<thead>
- 	  <tr>
- 	    <th>Name</th>
- 	    <th>Email</th>
- 	    <th>Number</th> 
- 	    <th>Action</th>	    
- 	    <th>&nbsp;</th>	 
- 	  </tr>
- 	</thead>
- 	<tbody>
- 	   <tr> 	   	   
- 	   	<td><input type="text" class="form-control" ng-model="contact.name" placeholder="Enter Fullname" required /></td>
- 	   	<td><input type="text" class="form-control" ng-model="contact.email" placeholder="Enter Email" required /></td>
- 	   	<td><input type="text" class="form-control" ng-model="contact.number" placeholder="Enter Phone Number" required /></td>
- 	   	<td><button class="btn btn-primary"  ng-click="addcontact()">Add Contact</button></td>
- 	   	<td><button class="btn btn-info" ng-click="update()">Update</button></td>
-      
- 	   </tr>
- 		<tr ng-repeat="contacts in contactlist">
- 			<td>{{contacts.name}}</td>
- 			<td>{{contacts.email}}</td>
- 			<td>{{contacts.number}}</td>
- 			<td><button class="btn btn-danger" ng-click="remove(contacts._id)">Remove</button></td>
- 			<td><button class="btn btn-warning" ng-click="edit(contacts._id)">Edit</button></td>
- 		</tr>
- 	</tbody>
- </table>
+<body  background= 'Autumn-Garden-HD-Wallpaper13.jpg'>
+	<div class ="container" ng-controller = AppCtrl>
+		<h1>Contact List</h1>
+		<table class = "table">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Email</th>
+					<th>Number</th>
+					<th>Action</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>	
+			<tbody>
+				<tr>
+					<td><input class='form-control' ng-model = 'contact.name'></td> 
+					<td><input class='form-control' ng-model= 'contact.email'></td>
+					<td><input class='form-control' ng-model = 'contact.number'></td>
+					<td><button class = 'btn btn-primary custom' ng-show=" bool == false" ng-click = 'addContact()'>Add Contact</button></td>
+					<td><button class = 'btn btn-info custom' ng-click ='update()'>Update</button></td>
 
- </div>
- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
- <script src="controller/controller.js"></script> 
+				</tr>	
+				<tr ng-repeat ='contact in contactlist'>
+					<td>{{contact.name}}</td>
+					<td>{{contact.email}}</td>
+					<td>{{contact.number}}</td>
+					<td><button class = 'btn btn-danger custom' ng-click = 'remove(contact._id)'>Remove</button></td>
+					<td><button class = 'btn btn-warning custom' ng-click ='edit(contact._id)'>Edit</button></td>
+				</tr>
+			</tbody>
+
+
+		</table>
+	</div>
+	<script src= "https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-beta.1/angular.min.js"></script>
+	<script src="controllers/controller.js"></script>
 </body>
 </html>

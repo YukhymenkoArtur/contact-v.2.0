@@ -1,0 +1,9 @@
+body {
+    color: #FFFFFF;
+}
+.table th, .table td { 
+     border-top: none !important; 
+ }
+ .custom {
+    width: 110px !important;
+}

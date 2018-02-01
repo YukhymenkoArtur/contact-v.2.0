@@ -1,89 +1,67 @@
 var express = require('express');
 var app = express();
-//var mongojs = require('mongojs');
-//var db = mongojs('contactlist',['contactlist,users']);
-var ObjectID = require('mongodb').ObjectID;
-var MongoClient = require('mongodb').MongoClient
-    , format = require('util').format;
+var mongojs = require('mongojs')
+var databaseUrl = 'mongodb://sujan:test@ds037234.mongolab.com:37234/meandb';
+var collection = ['contactlist'];
 
-var bodyParser = require('body-parser');
 
-app.use(express.static(__dirname + "/public"))
-app.use(bodyParser.json());
 
-app.use(function (req, res, next) {
+var db = mongojs(databaseUrl, collection, {authMechanism: 'ScramSHA1'});
+//var db = mongojs('contactlist', ['contactlist']);
+var bodyparser = require('body-parser');
 
-    // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', '*');
 
-    // Request methods you wish to allow
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 
-    // Request headers you wish to allow
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+app.use(express.static(__dirname + "/public"));
+app.use(bodyparser.json());
 
-    // Set to true if you need the website to include cookies in the requests sent
-    // to the API (e.g. in case you use sessions)
-    res.setHeader('Access-Control-Allow-Credentials', true);
-
-    // Pass to next layer of middleware
-    next();
+app.get('/controller', function(req,res){
+	
+	db.contactlist.find(function(err, docs){
+		
+		res.json(docs);
+	});
+	
 });
-var url = 'mongodb://raj9701:raj970123@ds155727.mlab.com:55727/contactlists';
-//mongodb://raj9701:raj970123@ds155727.mlab.com:55727/contactlists
-MongoClient.connect(url, function(err, db) {
-  if (err) throw err;
-  console.log("Connected to Database");
 
- app.get('/contactlists',function(req,res){
-     console.log("i get GET request")    
-     db.collection('users').find().toArray(function(err,docs){
-        console.log(docs);    
-        //assert.equal(1, docs);   
-        res.json(docs);
-     });
- });
+app.post('/controller', function(req,res){
+	console.log(req.body);
+	db.contactlist.insert(req.body, function(err, docs){
+		console.log("erro"  + err);
+		console.log("docs: " + docs); 
+		res.json(docs);
+	});
 
- app.post('/contactlist',function(req,res){
-  console.log(req.body)  
-  db.collection('users').insertOne(req.body,function(err,docs){
-    //console.log(docs);
-    res.json(docs);
-  });
- });
+});
 
- app.delete('/contactlist/:id',function(req,res){
-      var id = req.params.id;
-      console.log(id);
-      db.collection('users').deleteOne({_id: ObjectID(id)},function(err,docs){      	
-      	res.json(docs);
-      })
- });
+app.delete('/controller/:id', function(req,res){
+	var id = req.params.id;
+	console.log("Delete Called");
+	db.contactlist.remove({_id: mongojs.ObjectId(id)}, function(err, docs){
+		
+		res.json(docs);
+	});
 
- app.get('/contactlist/:id',function(req,res){
- 	var id = req.params.id;
- 	console.log(id);
- 	db.collection('users').findOne({_id: ObjectID(id)},function(err,docs){
-             console.log(docs);
-             res.send(docs);
-     	});
- 	});
+});
 
- app.put('/contactlist/:id',function(req,res){
- 	var id = req.params.id;
- 	console.log(req.body.name); 
-  console.log(id);	
- 	db.collection('users').updateOne({_id:ObjectID(id)},
-     {$set: {name: req.body.name,email:req.body.email,number:req.body.number}}, 
-     {upsert: true        
-      },function(err,docs){
-            console.log(docs);
-            res.json(docs);                        
- 	   });
- 	});
+app.get('/controller/:id', function(req,res){
+	var id = req.params.id;
+	db.contactlist.findOne({_id: mongojs.ObjectId(id)}, function(err, docs){
+		console.log("inside server edit"+ docs);
+		res.json(docs);
+	});
 
+});
 
- });
-var port =  process.env.PORT ;
-app.listen(port);
-console.log('Server running on port 8000');
+app.put('/controller/:id', function(req,res){
+	var id = req.params.id;
+	db.contactlist.findAndModify({Query: {_id: mongojs.ObjectId(id)},
+		update:{$set:{name: req.body.name, email: req.body.email, number:req.body.number}},
+		new: false}, function(err, docs){
+		
+		res.json(docs);
+	});
+
+});
+app.listen(3000);
+console.log('server running');
