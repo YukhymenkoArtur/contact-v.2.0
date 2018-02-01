@@ -1,67 +1,89 @@
-// Server.js
-
 var express = require('express');
-var nodemailer = require('nodemailer');
-var multer = require('multer');
-var upload = multer();
 var app = express();
+//var mongojs = require('mongojs');
+//var db = mongojs('contactlist',['contactlist,users']);
+var ObjectID = require('mongodb').ObjectID;
+var MongoClient = require('mongodb').MongoClient
+    , format = require('util').format;
 
-app.set('port', (process.env.PORT || 8080));
+var bodyParser = require('body-parser');
 
-//set view engine to ejs
-app.set('view engine', 'ejs');
+app.use(express.static(__dirname + "/public"))
+app.use(bodyParser.json());
 
-app.use(express.static('public'));
+app.use(function (req, res, next) {
 
-// Home
-app.get('/', function(req, res) {
-  var drink
-  res.render('index');
+    // Website you wish to allow to connect
+    res.setHeader('Access-Control-Allow-Origin', '*');
+
+    // Request methods you wish to allow
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+    // Request headers you wish to allow
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.setHeader('Access-Control-Allow-Credentials', true);
+
+    // Pass to next layer of middleware
+    next();
 });
+var url = 'mongodb://raj9701:raj970123@ds155727.mlab.com:55727/contactlists';
+//mongodb://raj9701:raj970123@ds155727.mlab.com:55727/contactlists
+MongoClient.connect(url, function(err, db) {
+  if (err) throw err;
+  console.log("Connected to Database");
 
-//About
-app.get('/work', function(req, res) {
-  res.render('work');
-});
+ app.get('/contactlists',function(req,res){
+     console.log("i get GET request")    
+     db.collection('users').find().toArray(function(err,docs){
+        console.log(docs);    
+        //assert.equal(1, docs);   
+        res.json(docs);
+     });
+ });
 
-//Contact
-app.get('/contact', function(req, res) {
-  res.render('contact')
-})
+ app.post('/contactlist',function(req,res){
+  console.log(req.body)  
+  db.collection('users').insertOne(req.body,function(err,docs){
+    //console.log(docs);
+    res.json(docs);
+  });
+ });
 
-//Contact Submit
-app.post('/contact', upload.single(), function(req, res, next) {
+ app.delete('/contactlist/:id',function(req,res){
+      var id = req.params.id;
+      console.log(id);
+      db.collection('users').deleteOne({_id: ObjectID(id)},function(err,docs){      	
+      	res.json(docs);
+      })
+ });
+
+ app.get('/contactlist/:id',function(req,res){
+ 	var id = req.params.id;
+ 	console.log(id);
+ 	db.collection('users').findOne({_id: ObjectID(id)},function(err,docs){
+             console.log(docs);
+             res.send(docs);
+     	});
+ 	});
+
+ app.put('/contactlist/:id',function(req,res){
+ 	var id = req.params.id;
+ 	console.log(req.body.name); 
+  console.log(id);	
+ 	db.collection('users').updateOne({_id:ObjectID(id)},
+     {$set: {name: req.body.name,email:req.body.email,number:req.body.number}}, 
+     {upsert: true        
+      },function(err,docs){
+            console.log(docs);
+            res.json(docs);                        
+ 	   });
+ 	});
 
 
-//nodemailer config
-var transporter = nodemailer.createTransport('smtps://'+ process.env.emailUN +'%40gmail.com:' + process.env.emailPass +'@smtp.gmail.com');
-
-var mailOptions = {
-  from: req.body.email + req.body.name,
-  to: process.env.email,
-  subject: 'New Message: '+req.body.subject,
-  text: req.body.body,
-  html: '<b> from: ' + req.body.email + ' - ' + req.body.name +'</b><br /><hr><br /> ' + req.body.body
-}
-
-transporter.sendMail(mailOptions, function(error, info) {
-  if(error) {
-    console.log(error);
-  } else {
-    console.log('sent!' + info.response);
-  }
-});
-
-
-//After the form is submitted display success message for a bit then refresh
-setTimeout(function() {
-  res.redirect('/contact');
-}, 3000)
-
-})
-
-
-
-app.listen(app.get('port'), function() {
-  console.log("Express server started on port: " + app.get('port'));
-});
+ });
+var port =  process.env.PORT ;
+app.listen(port);
+console.log('Server running on port 8000');
