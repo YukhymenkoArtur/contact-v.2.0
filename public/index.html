@@ -1,62 +1,47 @@
 <!DOCTYPE html>
-<html ng-app="ContactList">
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Contact List</title>
-        <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="app/css/main.css" />
-        <link rel="stylesheet" href="app/css/jquery-ui-1.10.4.custom.min.css" />
+<html>
+<head>
+	<title>Contact List App</title>	
+	<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+</head>
+<body ng-app="myApp">
+<div class="container" ng-controller="AppCtrl">
+	<h1>Contact List App</h1>
+	<input ng-model="test">	
+	<h1>{{test}}</h1>
+ <table class="table">
+ 	<thead>
+ 	  <tr>
+ 	    <th>Name</th>
+ 	    <th>Email</th>
+ 	    <th>Number</th> 
+ 	    <th>Action</th>	    
+ 	    <th>&nbsp;</th>	 
+ 	  </tr>
+ 	</thead>
+ 	<tbody>
+ 	   <tr> 	   	   
+ 	   	<td><input type="text" class="form-control" ng-model="contact.name" placeholder="Enter Fullname" required /></td>
+ 	   	<td><input type="text" class="form-control" ng-model="contact.email" placeholder="Enter Email" required /></td>
+ 	   	<td><input type="text" class="form-control" ng-model="contact.number" placeholder="Enter Phone Number" required /></td>
+ 	   	<td><button class="btn btn-primary"  ng-click="addcontact()">Add Contact</button></td>
+ 	   	<td><button class="btn btn-info" ng-click="update()">Update</button></td>
+      
+ 	   </tr>
+ 		<tr ng-repeat="contacts in contactlist">
+ 			<td>{{contacts.name}}</td>
+ 			<td>{{contacts.email}}</td>
+ 			<td>{{contacts.number}}</td>
+ 			<td><button class="btn btn-danger" ng-click="remove(contacts._id)">Remove</button></td>
+ 			<td><button class="btn btn-warning" ng-click="edit(contacts._id)">Edit</button></td>
+ 		</tr>
+ 	</tbody>
+ </table>
 
-        <script src="app/js/jquery-2.0.3.min.js"></script>
-        <script src="app/js/jquery-ui-1.10.4.custom.min.js"></script>
-        <script src="app/js/jquery.ui.touch-punch.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
-        <script src="app/js/ui-bootstrap-0.1.0.min.js"></script>
-        <script src="app/js/ui-bootstrap-tpls-0.1.0.js"></script>
-        <script src="app/js/underscore.min.js"></script>
-        <script src="app/application.js"></script>
-        <script src="app/controllers/mainCtrl.js"></script>
-    </head>
-    <body ng-controller="MainCtrl">
-        <div class="main-container text-center">
-            <h1>Contact List</h1>
-            <h4 class="error-indicator"
-                ng-if="isError">Oops, something went wrong.</h4>
-
-            <div class="contact-form-container">
-                <form class="form-inline">
-                    <div class="form-group">
-                        <label for="name"></label>
-                        <input type="text" 
-                               class="form-control" 
-                               id="name" 
-                               placeholder="Enter Name"
-                               ng-model="newContact.lastname">
-                    </div>
-                    <button ng-click="save()" class="btn btn-default">Save</button>
-                    <div class="sml-loading-spinner"
-                         ng-show="isSaving">
-                </form>
-            </div>
-
-            <div class="contact-list-container" ng-if="!isLoading">
-                <h4 class="loading-indicator"
-                    ng-if="isLoading">Loading...</h4>
-                <table class="table" ng-if="contacts.length > 0">
-                    <thead>
-                        <tr>
-                            <th>Salesforce ID</th>
-                            <th>Name</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="contact in contacts">
-                            <td ng-bind="contact.sfid"></td>
-                            <td ng-bind="contact.name"></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </body>
+ </div>
+ <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
+ <script src="controller/controller.js"></script> 
+</body>
 </html>
