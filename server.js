@@ -1,67 +1,67 @@
+// Server.js
+
 var express = require('express');
+var nodemailer = require('nodemailer');
+var multer = require('multer');
+var upload = multer();
 var app = express();
-var mongojs = require('mongojs')
-var databaseUrl = 'mongodb://sujan:test@ds037234.mongolab.com:37234/meandb';
-var collection = ['contactlist'];
 
+app.set('port', (process.env.PORT || 8080));
 
+//set view engine to ejs
+app.set('view engine', 'ejs');
 
-var db = mongojs(databaseUrl, collection, {authMechanism: 'ScramSHA1'});
-//var db = mongojs('contactlist', ['contactlist']);
-var bodyparser = require('body-parser');
+app.use(express.static('public'));
 
-
-
-app.use(express.static(__dirname + "/public"));
-app.use(bodyparser.json());
-
-app.get('/controller', function(req,res){
-	
-	db.contactlist.find(function(err, docs){
-		
-		res.json(docs);
-	});
-	
+// Home
+app.get('/', function(req, res) {
+  var drink
+  res.render('index');
 });
 
-app.post('/controller', function(req,res){
-	console.log(req.body);
-	db.contactlist.insert(req.body, function(err, docs){
-		console.log("erro"  + err);
-		console.log("docs: " + docs); 
-		res.json(docs);
-	});
-
+//About
+app.get('/work', function(req, res) {
+  res.render('work');
 });
 
-app.delete('/controller/:id', function(req,res){
-	var id = req.params.id;
-	console.log("Delete Called");
-	db.contactlist.remove({_id: mongojs.ObjectId(id)}, function(err, docs){
-		
-		res.json(docs);
-	});
+//Contact
+app.get('/contact', function(req, res) {
+  res.render('contact')
+})
 
+//Contact Submit
+app.post('/contact', upload.single(), function(req, res, next) {
+
+
+//nodemailer config
+var transporter = nodemailer.createTransport('smtps://'+ process.env.emailUN +'%40gmail.com:' + process.env.emailPass +'@smtp.gmail.com');
+
+var mailOptions = {
+  from: req.body.email + req.body.name,
+  to: process.env.email,
+  subject: 'New Message: '+req.body.subject,
+  text: req.body.body,
+  html: '<b> from: ' + req.body.email + ' - ' + req.body.name +'</b><br /><hr><br /> ' + req.body.body
+}
+
+transporter.sendMail(mailOptions, function(error, info) {
+  if(error) {
+    console.log(error);
+  } else {
+    console.log('sent!' + info.response);
+  }
 });
 
-app.get('/controller/:id', function(req,res){
-	var id = req.params.id;
-	db.contactlist.findOne({_id: mongojs.ObjectId(id)}, function(err, docs){
-		console.log("inside server edit"+ docs);
-		res.json(docs);
-	});
 
+//After the form is submitted display success message for a bit then refresh
+setTimeout(function() {
+  res.redirect('/contact');
+}, 3000)
+
+})
+
+
+
+app.listen(app.get('port'), function() {
+  console.log("Express server started on port: " + app.get('port'));
 });
-
-app.put('/controller/:id', function(req,res){
-	var id = req.params.id;
-	db.contactlist.findAndModify({Query: {_id: mongojs.ObjectId(id)},
-		update:{$set:{name: req.body.name, email: req.body.email, number:req.body.number}},
-		new: false}, function(err, docs){
-		
-		res.json(docs);
-	});
-
-});
-app.listen(3000);
-console.log('server running');

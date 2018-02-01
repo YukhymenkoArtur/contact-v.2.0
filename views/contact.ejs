@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <% include ../views/partials/head %>
+  </head>
+  <body class="container">
+
+    <header>
+      <% include ../views/partials/header %>
+    </header>
+
+    <main>
+      <div class="jumbotron">
+        <h1 class="text-center">Contact</h1>
+        <br />
+        <p class="text-center"> I'll get back to you shortly.</p>
+        <div class="text-center" id="errorMessage"></div>
+        <div class="text-center" id="successMessage"></div>
+        <form action="/contact" class="contactForm" method="POST" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="nameInput">Name</label>
+            <input type="text" class="form-control" id="nameInput" name="name" placeholder="Please enter your name" required>
+          </div>
+          <div id="contactForm" class="form-group">
+            <label for="subjectInput">Subject</label>
+            <input type="text" class="form-control" name="subject" placeholder="Subject" required >
+          </div>
+          <div class="form-group">
+            <label for="exampleInputEmail1">Email address</label>
+            <input type="email" class="form-control" name="email" placeholder="Email" required>
+          </div>
+            <div class="form-group">
+              <label for="emailBody">Body</label>
+              <textarea class="form-control" rows="5" id="emailBody" name="body" placeholder="..." required></textarea>
+            </div>
+          <button type="submit" id="formSubmit" class="btn btn-primary">Submit</button>
+
+        </form>
+      </div>
+    </main>
+
+
+    <footer>
+      <% include ../views/partials/footer %>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.0/jquery.validate.js"></script>
+    <script>
+
+    $(document).ready(function() {
+
+      //Form Validation Setup
+        var formValidated = $(".contactForm").validate({
+          errorLabelContainer: "#errorMessage",
+          wrapper: "li",
+          rules: {
+            name: "required",
+            subject: "required",
+            email: {
+              required: true,
+              email: true
+            },
+            body: "required"
+          },
+          messages: {
+            name: "Please enter your name so I know who you are",
+            subject: "You forgot the subject.",
+            email: {
+              required: "I need your email address so I can contact you back",
+              email: "Please enter a valid e-mail address"
+            },
+            body: "Hey, you forgot your message."
+          },
+          submitHandler: function(form) {
+            console.log('The Form was Valid');
+            $('#successMessage').text("Submitted Successfully!")
+            .addClass("alert alert-success").show();
+            form.submit();
+
+          },
+          invalidHandler: function(event, validator) {
+            console.log('The form is invalid');
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
+
+
+
+
+<!--
+  <div class="form-group">
+    <label for="nameInput">Name</label>
+    <input type="text" class="form-control" id="nameInput" placeholder="Please enter your name">
+  </div>
+  <div class="form-group">
+    <label for="exampleInputEmail1">Email address</label>
+    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+  </div>
+    <div class="form-group">
+      <label for="emailBody">Body</label>
+      <textarea class="form-control" rows="5" id="emailBody" placeholder="..."></textarea>
+    </div>
+
+  <button type="submit" class="btn btn-primary">Submit</button> -->
